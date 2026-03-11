@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
@@ -13,7 +13,7 @@ const navLinks = [
 
 ];
 
-export default function FloatingNavbar() {
+const FloatingNavbar = memo(function FloatingNavbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [activeSection, setActiveSection] = useState("");
@@ -125,4 +125,6 @@ export default function FloatingNavbar() {
             </AnimatePresence>
         </>
     );
-}
+});
+
+export default FloatingNavbar;

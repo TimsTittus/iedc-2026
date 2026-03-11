@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, useMemo } from "react";
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -57,7 +57,7 @@ const testimonials = [
     },
 ];
 
-export default function TestimonialsGrid() {
+const TestimonialsGrid = memo(function TestimonialsGrid() {
     const [showAll, setShowAll] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -71,9 +71,9 @@ export default function TestimonialsGrid() {
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
-    const visibleItems = showAll
+    const visibleItems = useMemo(() => showAll
         ? testimonials
-        : testimonials.slice(0, isMobile ? 3 : 6);
+        : testimonials.slice(0, isMobile ? 3 : 6), [showAll, isMobile]);
 
     return (
         <section className="py-20 md:py-32 max-w-6xl mx-auto px-6">
@@ -171,4 +171,6 @@ export default function TestimonialsGrid() {
             )}
         </section>
     );
-}
+});
+
+export default TestimonialsGrid;

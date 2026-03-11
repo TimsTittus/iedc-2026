@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { memo } from "react";
 import { Apple, Smartphone } from "lucide-react";
 
 const fadeInUp = {
@@ -9,7 +10,7 @@ const fadeInUp = {
 };
 
 
-export default function HabitsShowcase() {
+const HabitsShowcase = memo(function HabitsShowcase() {
     return (
         <section className="relative py-16 md:py-24 overflow-hidden">
             {/* Big text */}
@@ -101,4 +102,6 @@ export default function HabitsShowcase() {
             </motion.div>
         </section>
     );
-}
+});
+
+export default HabitsShowcase;

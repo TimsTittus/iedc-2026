@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, memo } from "react";
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -49,7 +49,7 @@ const events = [
     },
 ];
 
-export default function EventSection() {
+const EventSection = memo(function EventSection() {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const scroll = (direction: "left" | "right") => {
@@ -132,6 +132,8 @@ export default function EventSection() {
                                     alt={event.title}
                                     fill
                                     className="object-cover"
+                                    sizes="(max-width: 768px) 280px, 320px"
+                                    loading="lazy"
                                 />
                             </div>
 
@@ -173,4 +175,6 @@ export default function EventSection() {
             </div>
         </section>
     );
-}
+});
+
+export default EventSection;

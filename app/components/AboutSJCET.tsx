@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -12,7 +14,7 @@ const stagger = {
     animate: { transition: { staggerChildren: 0.2 } },
 };
 
-export default function AboutSJCET() {
+const AboutSJCET = memo(function AboutSJCET() {
     return (
         <section id="about" className="py-16 md:py-24 max-w-6xl mx-auto px-6 overflow-hidden">
             {/* About Section */}
@@ -76,6 +78,7 @@ export default function AboutSJCET() {
                                 width={64}
                                 height={64}
                                 className="object-contain"
+                                sizes="64px"
                             />
                         </motion.div>
 
@@ -109,6 +112,7 @@ export default function AboutSJCET() {
                                 width={64}
                                 height={64}
                                 className="object-contain"
+                                sizes="64px"
                             />
                         </motion.div>
 
@@ -126,4 +130,6 @@ export default function AboutSJCET() {
             </div>
         </section>
     );
-}
+});
+
+export default AboutSJCET;

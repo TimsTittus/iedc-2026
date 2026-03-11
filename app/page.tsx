@@ -1,6 +1,3 @@
-"use client";
-
-import dynamic from "next/dynamic";
 import FloatingNavbar from "./components/FloatingNavbar";
 import HeroSection from "./components/HeroSection";
 import HabitsShowcase from "./components/HabitsShowcase";
@@ -10,10 +7,7 @@ import EventSection from "./components/EventSection";
 import FinalCTA from "./components/FinalCTA";
 import Footer from "./components/Footer";
 
-// Lazy load heavy components
-const EventsShowcase = dynamic(() => import("./components/EventsShowcase"), { ssr: false });
-const GlobeSection = dynamic(() => import("./components/GlobeSection"), { ssr: false });
-const TestimonialsGrid = dynamic(() => import("./components/TestimonialsGrid"), { ssr: false });
+import DynamicHomeSections from "./components/DynamicHomeSections";
 
 export default function Home() {
   return (
@@ -37,9 +31,7 @@ export default function Home() {
         <BentoFeatures />
         <AboutSJCET />
         <EventSection />
-        <EventsShowcase />
-        <GlobeSection />
-        <TestimonialsGrid />
+        <DynamicHomeSections />
         <FinalCTA />
         <Footer />
       </div>

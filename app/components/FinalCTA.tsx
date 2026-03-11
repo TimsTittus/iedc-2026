@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { motion } from "framer-motion";
 import { Apple, Smartphone } from "lucide-react";
 
@@ -9,7 +9,7 @@ const fadeInUp = {
     animate: { opacity: 1, y: 0 },
 };
 
-export default function FinalCTA() {
+const FinalCTA = memo(function FinalCTA() {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -159,4 +159,6 @@ export default function FinalCTA() {
             </div>
         </section>
     );
-}
+});
+
+export default FinalCTA;

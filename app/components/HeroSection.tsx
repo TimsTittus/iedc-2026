@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import { motion } from "framer-motion";
 import { Play, Check } from "lucide-react";
 import Image from "next/image";
@@ -12,7 +14,7 @@ const fadeInUp = {
     animate: { opacity: 1, y: 0 },
 };
 
-export default function HeroSection() {
+const HeroSection = memo(function HeroSection() {
     const words = ["Innovative", "Creative", "Technical"];
 
     return (
@@ -153,4 +155,6 @@ export default function HeroSection() {
             </motion.div>
         </section>
     );
-}
+});
+
+export default HeroSection;

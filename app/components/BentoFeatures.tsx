@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,7 +39,7 @@ const pulseGlow = {
     }
 };
 
-export default function BentoFeatures() {
+const BentoFeatures = memo(function BentoFeatures() {
     return (
         <section id="features" className="py-16 md:py-24 max-w-6xl mx-auto px-6">
             {/* Header */}
@@ -87,7 +89,7 @@ export default function BentoFeatures() {
                             alt="Mentoring Background"
                             fill
                             className="object-contain transform rotate-[-6deg] drop-shadow-[0_20px_50px_rgba(255,107,74,0.4)]"
-                            sizes="(max-width: 768px) 100vw, 33vw"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 25vw"
                         />
                     </motion.div>
 
@@ -135,7 +137,7 @@ export default function BentoFeatures() {
                             alt="Innovation Background"
                             fill
                             className="object-contain"
-                            sizes="(max-width: 768px) 100vw, 66vw"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw"
                         />
                     </motion.div>
 
@@ -223,4 +225,6 @@ export default function BentoFeatures() {
             </motion.div>
         </section>
     );
-}
+});
+
+export default BentoFeatures;
