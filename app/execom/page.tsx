@@ -6,6 +6,8 @@ import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { Linkedin, Mail, X, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import { TeamMemberCard } from "../components/TeamMemberCard";
+import { useEffect } from "react";
 
 interface Member {
     name: string;
@@ -25,6 +27,14 @@ const teamSections = currentExecom.teamSections;
 
 export default function ExecomPage() {
     const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+    const [tappedMember, setTappedMember] = useState<string | null>(null);
+
+    // Handle click outside to close tap overlays
+    useEffect(() => {
+        const handleClickOutside = () => setTappedMember(null);
+        window.addEventListener("click", handleClickOutside);
+        return () => window.removeEventListener("click", handleClickOutside);
+    }, []);
 
     return (
         <main className="relative min-h-screen text-black overflow-hidden bg-[#FFFAF8]">
@@ -65,7 +75,7 @@ export default function ExecomPage() {
                     </div>
                 </section>
 
-                <section className="h-[60vh] md:h-[75vh] min-h-[500px] flex overflow-hidden border-y border-white/5">
+                <section className="h-[60vh] md:h-[75vh] min-h-[500px] flex overflow-x-auto md:overflow-hidden border-y border-white/5 no-scrollbar snap-x snap-mandatory">
                     {leads.map((lead, index) => (
                         <motion.div
                             key={index}
@@ -73,7 +83,7 @@ export default function ExecomPage() {
                             animate={{ scaleX: 1 }}
                             transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                             onClick={() => setSelectedMember(lead)}
-                            className="relative flex-1 group cursor-pointer overflow-hidden border-r border-white/5 last:border-r-0 hover:flex-[1.5] transition-all duration-700 ease-out"
+                            className="relative flex-1 group cursor-pointer overflow-hidden border-r border-white/5 last:border-r-0 md:hover:flex-[1.5] transition-all duration-700 ease-out min-w-[320px] md:min-w-0 flex-shrink-0 snap-center"
                         >
                             <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] text-[40vw] font-black select-none pointer-events-none group-hover:opacity-[0.05] transition-opacity">
                                 {lead.letter}
@@ -102,7 +112,7 @@ export default function ExecomPage() {
                                     {lead.role}
                                 </p>
                             </div>
-                            <div className="absolute inset-0 flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute inset-0 flex flex-col justify-end p-8 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                                 <motion.div
                                     initial={{ y: 20 }}
                                     whileHover={{ y: 0 }}
@@ -142,7 +152,14 @@ export default function ExecomPage() {
                             <div className="hidden md:block px-6">
                                 <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                                     {section.members.map((member, mIndex) => (
-                                        <TeamMemberCard key={mIndex} member={member} index={mIndex} onSelect={setSelectedMember} />
+                                        <TeamMemberCard
+                                            key={mIndex}
+                                            member={member as Member}
+                                            index={mIndex}
+                                            onSelect={setSelectedMember}
+                                            isTapped={tappedMember === `desktop-${sIndex}-${mIndex}`}
+                                            onTap={() => setTappedMember(tappedMember === `desktop-${sIndex}-${mIndex}` ? null : `desktop-${sIndex}-${mIndex}`)}
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -150,7 +167,13 @@ export default function ExecomPage() {
                                 <div className="overflow-x-auto hide-scrollbar px-6 flex gap-6 snap-x snap-mandatory pb-4">
                                     {section.members.map((member, mIndex) => (
                                         <div key={mIndex} className="min-w-[280px] snap-center">
-                                            <TeamMemberCard member={member} index={mIndex} onSelect={setSelectedMember} />
+                                            <TeamMemberCard
+                                                member={member as Member}
+                                                index={mIndex}
+                                                onSelect={setSelectedMember}
+                                                isTapped={tappedMember === `mobile-${sIndex}-${mIndex}`}
+                                                onTap={() => setTappedMember(tappedMember === `mobile-${sIndex}-${mIndex}` ? null : `mobile-${sIndex}-${mIndex}`)}
+                                            />
                                         </div>
                                     ))}
                                 </div>
