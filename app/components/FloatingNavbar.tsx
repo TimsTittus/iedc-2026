@@ -8,10 +8,8 @@ import Image from "next/image";
 const navLinks = [
     { label: "Home", href: "/" },
     { label: "About IEDC", href: "/#about" },
-    { label: "Events", href: "/#events" },
-    // { label: "Startups", href: "/events" },
+    { label: "Events", href: "/events" },
     { label: "Execom", href: "/execom" },
-
 ];
 
 const FloatingNavbar = memo(function FloatingNavbar() {

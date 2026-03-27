@@ -1,97 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ArrowRight, Calendar, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useRef, memo } from "react";
+import { useState, useEffect, memo, useRef } from "react";
+import Link from "next/link";
+import { sortedEvents } from "../events/data";
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
 };
 
-const events = [
-    {
-        title: "InnovateHer",
-        date: "09-03-2026",
-        status: "EXPIRED",
-        image: "/events/InnovateHer.jpeg",
-    },
-    {
-        title: "Kottayam Cluster Level Hackathon",
-        date: "14-02-2026",
-        status: "EXPIRED",
-        image: "/events/KTMCLUSTERHCKTHN.jpeg",
-    },
-    {
-        title: "Wednesday Cafe - 18.02.2026",
-        date: "18-02-2026",
-        status: "EXPIRED",
-        image: "/events/WEDCAFE1802.jpeg",
-    },
-    {
-        title: "Wednesday Cafe - 11.02.2026",
-        date: "11-02-2026",
-        status: "EXPIRED",
-        image: "/events/WEDCAFE1102.jpeg",
-    },
-    {
-        title: "RELEVANT",
-        date: "06, 07 Feb 2026",
-        status: "EXPIRED",
-        image: "/events/RELEVANT.jpeg",
-    },
-    {
-        title: "Ui/Ux Week",
-        date: "Jan 19-23 2026",
-        status: "EXPIRED",
-        image: "/events/UiUxWeek.jpeg",
-    },
-    {
-        title: "Smart India Hackathon 2025",
-        date: "09-08-2025",
-        status: "EXPIRED",
-        image: "/events/SIH25.jpeg",
-    },
-    {
-        title: "Prayana - Alumni Entrepreneur Meetup",
-        date: "23-08-2025",
-        status: "EXPIRED",
-        image: "/events/PRAYANA2025.jpg",
-    },
-    {
-        title: "Wednesday Cafe - 13.08.2025",
-        date: "13-08-2025",
-        status: "EXPIRED",
-        image: "/events/WEDCAFE1308.jpg",
-    },
-    {
-        title: "Build And Ship",
-        date: "05-08-2025",
-        status: "EXPIRED",
-        image: "/events/BUILDANDSHIP.jpg",
-    },
-    {
-        title: "INSENDIUM 10.0",
-        date: "04-08-2025",
-        status: "EXPIRED",
-        image: "/events/INSENDIUM10.0.jpg",
-    },
-    {
-        title: "Techy Pedia",
-        date: "31-07-2025",
-        status: "EXPIRED",
-        image: "/events/Techypedia.jpg",
-    },
-    {
-        title: "Wednesday Cafe with Shaheen Hyder",
-        date: "15-01-2025",
-        status: "EXPIRED",
-        image: "/events/event3.jpg",
-    },
-];
+const homeEvents = sortedEvents.slice(0, 6);
 
 const EventSection = memo(function EventSection() {
+    const [tappedCard, setTappedCard] = useState<string | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const scroll = (direction: "left" | "right") => {
@@ -102,8 +26,14 @@ const EventSection = memo(function EventSection() {
         }
     };
 
+    useEffect(() => {
+        const handleClickOutside = () => setTappedCard(null);
+        window.addEventListener("click", handleClickOutside);
+        return () => window.removeEventListener("click", handleClickOutside);
+    }, []);
+
     return (
-        <section id="events" className="pt-16 md:pt-24 pb-0 overflow-x-clip">
+        <section id="events" className="pt-16 md:pt-24 pb-16 md:pb-24 overflow-x-clip">
             <div className="max-w-7xl mx-auto px-6">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-12">
@@ -150,7 +80,7 @@ const EventSection = memo(function EventSection() {
             </div>
 
             {/* Scrollable cards */}
-            <div className="relative group">
+            <div className="relative">
                 <motion.div
                     ref={scrollRef}
                     variants={fadeInUp}
@@ -160,44 +90,97 @@ const EventSection = memo(function EventSection() {
                     transition={{ duration: 0.7, delay: 0.2 }}
                     className="flex gap-6 overflow-x-auto no-scrollbar pb-8 cursor-grab active:cursor-grabbing px-6 xl:px-[calc((100vw-80rem)/2+1.5rem)]"
                 >
-                    {events.map((event, i) => (
-                        <motion.div
-                            key={i}
-                            whileHover={{ y: -8 }}
-                            transition={{ duration: 0.3 }}
-                            className="flex-shrink-0 w-[280px] md:w-[320px] flex flex-col gap-4"
-                        >
-                            {/* Card Image */}
-                            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50">
-                                <Image
-                                    src={event.image}
-                                    alt={event.title}
-                                    fill
-                                    className="object-cover"
-                                    sizes="(max-width: 768px) 280px, 320px"
-                                    loading="lazy"
-                                />
-                            </div>
+                    {homeEvents.map((event, i) => {
+                        const cardId = `home-event-${i}`;
+                        const isActive = tappedCard === cardId;
 
-                            {/* Card Info */}
-                            <div className="space-y-1">
-                                <div className="flex justify-between items-center text-[13px] font-semibold">
-                                    <span className="text-[#22C55E]">{event.date}</span>
-                                    <span className="text-text-muted/60 tracking-wider font-bold">
-                                        {event.status}
-                                    </span>
+                        return (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.08, duration: 0.5 }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setTappedCard(isActive ? null : cardId);
+                                }}
+                                className="flex-shrink-0 w-[280px] md:w-[320px] group relative aspect-[3/4] rounded-2xl md:rounded-[2rem] overflow-hidden bg-[#111] border border-white/5 cursor-pointer"
+                            >
+                                {/* Orange gradient on hover/tap */}
+                                <div
+                                    className={`absolute inset-0 bg-gradient-to-t from-[#FF7A00]/40 via-transparent to-transparent transition-opacity duration-500 z-10 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                                        }`}
+                                />
+
+                                <div className="absolute inset-0 z-0 will-change-transform">
+                                    <Image
+                                        src={event.image}
+                                        alt={event.title}
+                                        fill
+                                        className="object-cover transition-all duration-700"
+                                        sizes="(max-width: 768px) 280px, 320px"
+                                        loading="lazy"
+                                    />
+
+                                    {/* Default bottom info */}
+                                    <div className={`absolute bottom-0 left-0 right-0 p-4 md:p-6 pt-16 bg-gradient-to-t from-black via-black/40 to-transparent transition-opacity duration-300 z-20 ${isActive ? 'opacity-0' : 'group-hover:opacity-0'
+                                        }`}>
+                                        <h3 className="text-base md:text-xl font-bold text-white line-clamp-2 leading-tight">{event.title}</h3>
+                                        <div className="flex items-center gap-1.5 mt-1">
+                                            <Calendar size={11} className="text-[#FF7A00]" />
+                                            <span className="text-[#FF7A00] text-[11px] md:text-xs font-semibold">{event.date}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h3 className="text-lg md:text-xl font-bold text-text-main line-clamp-2 leading-tight">
-                                    {event.title}
-                                </h3>
-                            </div>
-                        </motion.div>
-                    ))}
+
+                                {/* Orange overlay on hover/tap */}
+                                <div
+                                    className={`absolute inset-0 z-30 bg-[#FF7A00] p-4 md:p-6 flex flex-col justify-between overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isActive ? 'translate-y-0' : 'translate-y-full group-hover:translate-y-0'
+                                        }`}
+                                >
+                                    <div>
+                                        <h3 className="text-lg md:text-xl font-bold text-black leading-tight">{event.title}</h3>
+                                        <div className="flex items-center gap-4 mt-1 mb-3 md:mb-4">
+                                            <span className="text-black/60 font-bold text-[10px] md:text-xs uppercase tracking-widest">{event.date}</span>
+                                            <span className={`text-[10px] md:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${event.status === 'OPEN'
+                                                ? 'bg-green-600 text-white'
+                                                : 'bg-black/15 text-black/60'
+                                                }`}>
+                                                {event.status}
+                                            </span>
+                                        </div>
+                                        {/* Grid pattern decoration */}
+                                        <div
+                                            className="absolute top-0 right-0 w-24 h-24 bg-white/10 [mask-image:linear-gradient(to_bottom_left,black,transparent)] pointer-events-none"
+                                            style={{ backgroundImage: 'linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px)', backgroundSize: '16px 16px' }}
+                                        />
+                                        <p className="text-black/80 text-xs md:text-sm leading-relaxed font-medium line-clamp-4 md:line-clamp-5">
+                                            {event.description}
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center justify-between mt-auto pt-2">
+                                        <div className="flex items-center gap-1.5">
+                                            <Clock size={12} className="text-black/50" />
+                                            <span className="text-black/50 text-[10px] font-bold uppercase tracking-wider">{event.status}</span>
+                                        </div>
+                                        <Link
+                                            href="/events"
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="bg-black text-white h-8 md:h-9 px-3 md:px-4 rounded-full flex items-center gap-1.5 text-[9px] md:text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform"
+                                        >
+                                            Details <ArrowRight size={10} />
+                                        </Link>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
                 </motion.div>
 
                 {/* Navigation Arrows */}
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="flex justify-end gap-3 mt-8">
+                    <div className="flex justify-end gap-3 mt-4">
                         <button
                             onClick={() => scroll("left")}
                             className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm bg-white"
@@ -214,6 +197,26 @@ const EventSection = memo(function EventSection() {
                         </button>
                     </div>
                 </div>
+            </div>
+
+            {/* View All Events Button */}
+            <div className="max-w-7xl mx-auto px-6">
+                <motion.div
+                    variants={fadeInUp}
+                    initial="initial"
+                    whileInView="animate"
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="flex justify-center mt-12"
+                >
+                    <Link
+                        href="/events"
+                        className="group flex items-center gap-3 px-8 py-4 bg-[#1D1D1F] text-white rounded-full font-bold hover:bg-[#FF7A00] hover:text-black transition-all duration-300 shadow-lg shadow-black/10"
+                    >
+                        View All Events
+                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                </motion.div>
             </div>
         </section>
     );
